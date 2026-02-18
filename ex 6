@@ -1,0 +1,72 @@
+package com.example.ex6;
+
+import android.graphics.drawable.AnimationDrawable;
+import android.media.MediaPlayer;
+import android.os.Bundle;
+import android.view.View;
+import android.view.animation.Animation;
+import android.widget.Button;
+import android.widget.ImageView;
+
+import androidx.activity.EdgeToEdge;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.graphics.Insets;
+import androidx.core.view.ViewCompat;
+import androidx.core.view.WindowInsetsCompat;
+
+public class MainActivity extends AppCompatActivity {
+    ImageView img;
+    Button b;
+    MediaPlayer m1;
+
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        EdgeToEdge.enable(this);
+        setContentView(R.layout.activity_main);
+        ViewCompat.setOnApplyWindowInsetsListener(findViewById(R.id.main), (v, insets) -> {
+            Insets systemBars = insets.getInsets(WindowInsetsCompat.Type.systemBars());
+            v.setPadding(systemBars.left, systemBars.top, systemBars.right, systemBars.bottom);
+            return insets;
+        });
+        Button b= findViewById(R.id.b);
+        ImageView img=findViewById(R.id.img);
+        m1=MediaPlayer.create(MainActivity.this,R.raw.aud);
+        b.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        img.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                AnimationDrawable a=new AnimationDrawable();
+                                a.addFrame(getResources().getDrawable(R.drawable.tangled1),500);
+                                a.addFrame(getResources().getDrawable(R.drawable.tangled2),500);
+                                a.addFrame(getResources().getDrawable(R.drawable.tangled3),500);
+                                a.addFrame(getResources().getDrawable(R.drawable.tangled),500);
+                                a.addFrame(getResources().getDrawable(R.drawable.tangledd),500);
+                                a.setOneShot(false);
+                                img.setBackgroundDrawable(a);
+                                a.start();
+                            }
+                        });
+                    }
+                }).start();
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        img.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                m1.start();
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+}
